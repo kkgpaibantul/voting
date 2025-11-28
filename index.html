@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Voting KKG PAI Bantul</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="assets/images/logo.png" alt="Logo KKG PAI Bantul" class="logo">
+            <h1>E-Voting KKG PAI Kabupaten Bantul</h1>
+            <p>Sistem Pemilihan Pengurus KKG PAI Bantul Periode 2024-2029</p>
+        </header>
+
+        <main class="main-content">
+            <div class="welcome-card">
+                <h2>Selamat Datang</h2>
+                <p>Silakan pilih menu di bawah untuk melanjutkan:</p>
+                
+                <div class="button-group">
+                    <button onclick="goToLogin()" class="btn btn-primary">
+                        🗳️ Masuk untuk Memilih
+                    </button>
+                    <button onclick="goToResults()" class="btn btn-secondary">
+                        📊 Lihat Hasil Voting
+                    </button>
+                    <button onclick="goToAdmin()" class="btn btn-outline">
+                        🔧 Admin Panel
+                    </button>
+                </div>
+            </div>
+
+            <div class="info-cards">
+                <div class="info-card">
+                    <h3>📅 Waktu Voting</h3>
+                    <p id="votingSchedule">Loading...</p>
+                </div>
+                <div class="info-card">
+                    <h3>👥 Total Pemilih</h3>
+                    <p id="totalVoters">Loading...</p>
+                </div>
+                <div class="info-card">
+                    <h3>✅ Sudah Memilih</h3>
+                    <p id="votedCount">Loading...</p>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 KKG PAI Kabupaten Bantul. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="assets/js/app.js"></script>
+    <script>
+        // Load initial data
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSystemInfo();
+        });
+
+        function goToLogin() {
+            window.location.href = 'login.html';
+        }
+
+        function goToResults() {
+            window.location.href = 'results.html';
+        }
+
+        function goToAdmin() {
+            window.location.href = 'admin.html';
+        }
+
+        async function loadSystemInfo() {
+            try {
+                const response = await callGoogleScript('getSystemInfo');
+                if (response.status === 'success') {
+                    document.getElementById('votingSchedule').textContent = 
+                        '1 Desember 2024, 08:00 WIB';
+                    document.getElementById('totalVoters').textContent = 
+                        response.health.statistics.totalPemilih + ' orang';
+                    document.getElementById('votedCount').textContent = 
+                        response.health.statistics.totalSudahMemilih + ' orang';
+                }
+            } catch (error) {
+                console.error('Error loading system info:', error);
+            }
+        }
+    </script>
+</body>
+</html>
