@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasil Voting - E-Voting KKG PAI Bantul</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .results-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #f7fafc;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #4299e1;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+        }
+
+        .results-table th,
+        .results-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .results-table th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .results-table tr:hover {
+            background: #f0f9ff;
+        }
+
+        .rank-badge {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #4299e1;
+            color: white;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        .rank-1 { background: #f59e0b; }
+        .rank-2 { background: #9ca3af; }
+        .rank-3 { background: #b45309; }
+
+        .vote-count {
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .vote-percentage {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .chart-container {
+            height: 400px;
+            margin: 2rem 0;
+        }
+
+        .results-message {
+            text-align: center;
+            padding: 2rem;
+            background: #f0f9ff;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+
+        .refresh-section {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .last-update {
+            text-align: center;
+            color: #718096;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Hasil Voting KKG PAI Bantul</h1>
+            <p>Hasil pemilihan pengurus KKG PAI Kabupaten Bantul periode 2024-2029</p>
+        </header>
+
+        <main>
+            <div class="results-container">
+                <div class="results-header">
+                    <h2>📊 Hasil Perhitungan Suara</h2>
+                    <p id="resultsStatus">Memuat data...</p>
+                </div>
+
+                <div id="statsContainer" class="stats-grid">
+                    <!-- Stats will be loaded here -->
+                </div>
+
+                <div id="resultsMessage" class="results-message" style="display: none;">
+                    <h3>Hasil Belum Tersedia</h3>
+                    <p>Hasil voting akan ditampilkan setelah periode voting selesai dan dibuka oleh admin.</p>
+                </div>
+
+                <div id="chartContainer" class="chart-container" style="display: none;">
+                    <canvas id="resultsChart"></canvas>
+                </div>
+
+                <div id="tableContainer" style="display: none;">
+                    <h3>Perolehan Suara Detail</h3>
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th width="50px">Rank</th>
+                                <th>Nama Kandidat</th>
+                                <th width="150px">Jumlah Suara</th>
+                                <th width="150px">Persentase</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTableBody">
+                            <!-- Results will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="refresh-section">
+                    <button onclick="loadResults()" class="btn btn-primary">
+                        🔄 Refresh Data
+                    </button>
+                    <button onclick="goToHome()" class="btn btn-outline">
+                        🏠 Kembali ke Beranda
+                    </button>
+                </div>
+
+                <div class="last-update">
+                    Terakhir update: <span id="lastUpdateTime">-</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="assets/js/app.js"></script>
+    <script src="assets/js/results.js"></script>
+    <script>
+        function goToHome() {
+            window.location.href = 'index.html';
+        }
+
+        // Load results when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadResults();
+            
+            // Auto-refresh every 30 seconds
+            setInterval(loadResults, 30000);
+        });
+    </script>
+</body>
+</html>
