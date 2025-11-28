@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - E-Voting KKG PAI Bantul</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Login E-Voting</h1>
+            <p>Masukkan token untuk melanjutkan</p>
+        </header>
+
+        <main class="login-container">
+            <div class="login-card">
+                <div class="tab-navigation">
+                    <button class="tab-btn active" onclick="switchTab('voter')">Pemilih</button>
+                    <button class="tab-btn" onclick="switchTab('admin')">Admin</button>
+                    <button class="tab-btn" onclick="switchTab('public')">Publik</button>
+                </div>
+
+                <div id="voter-tab" class="tab-content active">
+                    <h3>Login sebagai Pemilih</h3>
+                    <form id="voterLoginForm">
+                        <div class="form-group">
+                            <label for="voterToken">Token Pemilih:</label>
+                            <input type="text" id="voterToken" required 
+                                   placeholder="Masukkan token yang Anda terima">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Masuk untuk Memilih</button>
+                    </form>
+                </div>
+
+                <div id="admin-tab" class="tab-content">
+                    <h3>Login sebagai Admin</h3>
+                    <form id="adminLoginForm">
+                        <div class="form-group">
+                            <label for="adminToken">Token Admin:</label>
+                            <input type="password" id="adminToken" required 
+                                   placeholder="Masukkan token admin">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Masuk ke Dashboard</button>
+                    </form>
+                </div>
+
+                <div id="public-tab" class="tab-content">
+                    <h3>Akses Publik</h3>
+                    <form id="publicLoginForm">
+                        <div class="form-group">
+                            <label for="publicToken">Token Umum:</label>
+                            <input type="password" id="publicToken" required 
+                                   placeholder="Masukkan token umum">
+                        </div>
+                        <button type="submit" class="btn btn-secondary">Akses Publik</button>
+                    </form>
+                </div>
+
+                <div class="login-help">
+                    <p><strong>Bantuan:</strong></p>
+                    <ul>
+                        <li>Token pemilih dikirim via email</li>
+                        <li>Token admin hanya untuk panitia</li>
+                        <li>Token umum untuk melihat hasil</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <button onclick="goToHome()" class="btn btn-outline">Kembali ke Beranda</button>
+        </footer>
+    </div>
+
+    <script src="assets/js/auth.js"></script>
+    <script>
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function goToHome() {
+            window.location.href = 'index.html';
+        }
+
+        // Form submissions
+        document.getElementById('voterLoginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const token = document.getElementById('voterToken').value;
+            await handleVoterLogin(token);
+        });
+
+        document.getElementById('adminLoginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const token = document.getElementById('adminToken').value;
+            await handleAdminLogin(token);
+        });
+
+        document.getElementById('publicLoginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const token = document.getElementById('publicToken').value;
+            await handlePublicLogin(token);
+        });
+    </script>
+</body>
+</html>
