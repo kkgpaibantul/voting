@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting - E-Voting KKG PAI Bantul</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .candidate-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .candidate-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            cursor: pointer;
+        }
+
+        .candidate-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .candidate-card.selected {
+            border-color: #4299e1;
+            background: #f0f9ff;
+        }
+
+        .candidate-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            display: block;
+            border: 4px solid #e2e8f0;
+        }
+
+        .candidate-card.selected .candidate-image {
+            border-color: #4299e1;
+        }
+
+        .candidate-info {
+            text-align: center;
+        }
+
+        .candidate-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .candidate-school {
+            color: #718096;
+            margin-bottom: 0.25rem;
+        }
+
+        .candidate-region {
+            color: #a0aec0;
+            font-size: 0.9rem;
+        }
+
+        .selection-badge {
+            background: #4299e1;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-weight: bold;
+        }
+
+        .voting-progress {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar {
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 20px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #48bb78, #38a169);
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .selected-count {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2d3748;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .voting-instructions {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .instructions-list {
+            margin: 0.5rem 0 0 1.5rem;
+        }
+
+        .submit-section {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding: 1.5rem;
+            border-top: 2px solid #e2e8f0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Pemilihan Pengurus KKG PAI Bantul</h1>
+            <p>Pilih <span id="requiredCount">5</span> kandidat yang menurut Anda paling kompeten</p>
+        </header>
+
+        <main>
+            <div class="voting-progress">
+                <h3>Progress Pemilihan</h3>
+                <div class="selected-count">
+                    <span id="currentCount">0</span> / <span id="maxCount">5</span> terpilih
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+                <p id="progressText">Silakan pilih kandidat di bawah</p>
+            </div>
+
+            <div class="voting-instructions">
+                <h4>📋 Petunjuk Voting:</h4>
+                <ul class="instructions-list">
+                    <li>Pilih <strong>tepat 5 kandidat</strong> yang menurut Anda paling kompeten</li>
+                    <li>Klik foto kandidat untuk memilih/membatalkan pilihan</li>
+                    <li>Urutan pilihan tidak mempengaruhi hasil</li>
+                    <li>Pastikan pilihan Anda sudah final sebelum submit</li>
+                    <li><strong>Setelah submit, tidak dapat diubah!</strong></li>
+                </ul>
+            </div>
+
+            <div id="candidatesContainer" class="candidate-grid">
+                <!-- Candidate cards will be loaded here -->
+            </div>
+
+            <div class="submit-section">
+                <button id="submitVote" class="btn btn-primary" disabled>
+                    🗳️ Submit Pilihan Saya
+                </button>
+                <button onclick="clearSelection()" class="btn btn-outline">
+                    🔄 Reset Pilihan
+                </button>
+                <button onclick="logout()" class="btn btn-outline">
+                    🔒 Logout
+                </button>
+            </div>
+        </main>
+
+        <!-- Confirmation Modal -->
+        <div id="confirmationModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h3>Konfirmasi Voting</h3>
+                <p>Anda akan memilih <strong id="confirmCount">0</strong> kandidat:</p>
+                <ul id="selectedList" class="selected-list"></ul>
+                <p><strong>Setelah submit, pilihan tidak dapat diubah!</strong></p>
+                <div class="modal-actions">
+                    <button onclick="submitVote()" class="btn btn-primary">Ya, Submit Voting</button>
+                    <button onclick="closeModal()" class="btn btn-outline">Batal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/app.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/voting.js"></script>
+    <script>
+        // Initialize voting page
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!getSession('voterSession')) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            initializeVotingPage();
+        });
+
+        function logout() {
+            if (confirm('Yakin ingin logout? Progress voting akan hilang.')) {
+                clearSession();
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>
